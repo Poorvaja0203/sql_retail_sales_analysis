@@ -186,6 +186,57 @@ SELECT
 FROM hourly_sale
 GROUP BY shift
 ```
+11. **What is the average basket size (items per transaction)?**
+    
+```sql
+SELECT AVG(quantiy) AS average_basket_size
+FROM retail_sales;
+```
+12. **What is the gross margin per product category?**
+```sql
+SELECT category,
+       SUM(total_sale - cogs * quantiy) AS gross_margin
+FROM retail_sales
+GROUP BY category
+ORDER BY gross_margin DESC;
+```
+13. **Which age group spends the most?**
+```sql
+SELECT 
+  CASE
+    WHEN age < 20 THEN 'Teen'
+    WHEN age BETWEEN 20 AND 29 THEN '20s'
+    WHEN age BETWEEN 30 AND 39 THEN '30s'
+    WHEN age BETWEEN 40 AND 49 THEN '40s'
+    ELSE '50+'
+  END AS age_group,
+  SUM(total_sale) AS total_spent
+FROM retail_sales
+GROUP BY age_group
+ORDER BY total_spent DESC;
+```
+14. **What is the average number of items purchased per customer?**
+```sql
+SELECT AVG(total_items) FROM (
+  SELECT customer_id, SUM(quantiy) AS total_items
+  FROM retail_sales
+  GROUP BY customer_id
+) AS sub;
+```
+15. **Which gender spends more on average?**
+```sql
+SELECT gender, AVG(total_sale) AS avg_spend
+FROM retail_sales
+GROUP BY gender;
+```
+16. **What is the busiest hour of the day (most sales)?**
+```sql
+SELECT EXTRACT(HOUR FROM sale_time::TIME) AS hour,
+       SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY hour
+ORDER BY total_sales DESC
+```
 
 ## Findings
 
